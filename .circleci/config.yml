@@ -9,8 +9,11 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: |
+          echo $DOCKERHUB_PASS | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+      - run: |
           TAG=<< pipeline.git.revision >>
           docker build -t lab.rodrigodiez.io:$TAG .
+          docker push lab.rodrigodiez.io:$TAG
 
 workflows:
   build:
@@ -19,3 +22,4 @@ workflows:
       - build-docker-image:
           requires:
             - node/test
+          context: lab
