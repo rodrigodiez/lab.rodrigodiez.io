@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@3.0.0
+  docker: circleci/docker@1.4.0
 jobs:
   build-docker-image:
     docker:
@@ -19,7 +20,13 @@ workflows:
   build:
     jobs:
       - node/test
-      - build-docker-image:
+      - docker/publish:
+          image: $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+          tag: $CIRCLE_SHA1
+          docker-username: DOCKERHUB_USERNAME
+          docker-password: DOCKERHUB_PASSWORD
+          use-remote-docker: true
+          executor: docker/docker
           requires:
             - node/test
           context: lab
