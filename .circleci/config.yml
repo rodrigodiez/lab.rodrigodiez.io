@@ -10,7 +10,7 @@ jobs:
       - setup_remote_docker
       - run: |
           TAG=<< pipeline.git.revision >>
-          docker build lab.rodrigodiez.io:$TAG .
+          docker build -t lab.rodrigodiez.io:$TAG .
 
 workflows:
   build:
