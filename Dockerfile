@@ -8,7 +8,7 @@ RUN npm run build
 
 # production environment
 FROM nginx:stable-alpine
-COPY ./nginx/templates/default.conf.template /etc/nginx/templates/default.conf.template
+COPY ./platform/docker/nginx/templates/default.conf.template /etc/nginx/templates/default.conf.template
 
 COPY --from=build /app/build /usr/share/nginx/html
 
