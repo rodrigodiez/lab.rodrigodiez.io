@@ -13,7 +13,7 @@ jobs:
       - kubernetes/install-kubeconfig:
           kubeconfig: KUBECONFIG_DATA
       - run: |
-          apt-update
+          apt-get update
           apt-get install -y gettext-base
       - run: |
           envsubst <./platform/k8s/deployment.yml >./platform/k8s/deployment.out
