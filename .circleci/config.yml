@@ -2,19 +2,25 @@ version: 2.1
 orbs:
   node: circleci/node@3.0.0
   docker: circleci/docker@1.4.0
+  kubernetes: circleci/kubernetes@0.11.1
 jobs:
-  build-docker-image:
+  deploy:
     docker:
       - image: cimg/base:2020.01
     steps:
       - checkout
-      - setup_remote_docker
+      - kubernetes/install-kubectl
+      - kubernetes/install-kubeconfig:
+          kubeconfig: KUBECONFIG_DATA
       - run: |
-          echo $DOCKERHUB_PASS | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          apt-update
+          apt-get install -y gettext-base
       - run: |
-          TAG=<< pipeline.git.revision >>
-          docker build -t lab.rodrigodiez.io:$TAG .
-          docker push lab.rodrigodiez.io:$TAG
+          envsubst <./platform/k8s/deployment.yml >./platform/k8s/deployment.out
+          mv ./platform/k8s/deployment.out ./platform/k8s/deployment.yml
+      - kubernetes/create-or-update-resource:
+          resource-file-path: ./platform/k8s/deployment.yml
+          show-kubectl-command: true
 
 workflows:
   build:
@@ -29,4 +35,8 @@ workflows:
           executor: docker/docker
           requires:
             - node/test
+          context: lab
+      - deploy:
+          requires:
+            - docker/publish
           context: lab
