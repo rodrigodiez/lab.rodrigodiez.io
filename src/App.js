@@ -7,7 +7,9 @@ function App() {
     <div className="App">
       <Jumbotron>
         <h1>Welcome to the Lab!</h1>
-        <p>This page will contain a directory of site projects</p>
+        <p>
+          This page will contain a directory of site projects. Deployed via k8s!
+        </p>
       </Jumbotron>
     </div>
   );
